@@ -1,6 +1,35 @@
-## Pretrained Models
-All pretrained models can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1N4UTSkO5v_pXuSEi6LhQqB1xnEN41MvW?usp=sharing). 
+# 自监督检测预训练的目标定位
 
+## 环境要求
+- PyTorch 1.6+
+- Python 3.6+
+- CUDA 10.1+
+- GCC 4.9+
+- NVCC 2+
+- mmcv 0.6.1
+
+## 预训练
+sh tools/install.sh
+
+## 训练
+```
+./tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} --no-validate [optional arguments]
+```
+optional arguments:
+- `--work_dir`: 输出文件路径
+- `--resume_from`: 先前的checkpoint file
+
+**Important**: 默认为4GPUs，bacth为32
+
+使用8卡训练的示例为：
+```
+./tools/dist_train.sh configs/FPN/insloc_fpn_200ep.py 4 \
+    --no-validate \
+    --work-dir ckpt/insloc_fpn_200ep \
+    --seed 0
+```
+
+## 预训练模型下载
 | Arch | Pretrain Epoch | Link |
 | :---: | :------: | :--------: |
 | C4    | 200      | [link](https://drive.google.com/file/d/1bgrMLZjfRYaUeOptIw6WfrOnXjYm-ccg/view?usp=sharing) |
@@ -8,10 +37,9 @@ All pretrained models can be downloaded from [Google Drive](https://drive.google
 | FPN    | 200     | [link](https://drive.google.com/file/d/1MRfM6aZ-WSQANVOq8T-6IrukPQfZG5uP/view?usp=sharing) |
 | FPN    | 400     | [link](https://drive.google.com/file/d/1XTfIWk_S0NyPubBMt4e5Ha5YU789w6bL/view?usp=sharing) |
 
-## Main Results
+## 实验结果
 
-Here we list the results on MSCOCO with the detector of R50-C4 and R50-FPN. Without any multi-crop/auto/random augmentation, our InsLoc outperforms many previous contrastive methods. In order to clearly clarify the improvements brought by InsLoc, the comparison to the corresponding baseline (i.e., MoCo-v2) is as follows:
-
+以下我们列出了R50-C4和R50-FPN检测模型在MSCOCO上的实验结果。
 
 Mask R-CNN **R50-C4 1x**: 
 | Methods | Epoch | Box AP | Mask AP |  
@@ -45,4 +73,3 @@ Mask R-CNN **R50-FPN 2x**:
 | InsLoc  | 200 | 43.2 | 38.7 | 
 | InsLoc  | 400 | 43.3 | 38.8 | 
 
-More results are available in our paper.
